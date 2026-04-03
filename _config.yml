@@ -18,10 +18,10 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Hunter's Notes
+title: Qwen2.5-VL Analysis
 email: hello@example.com
 description: >-
-  Personal posts, technical notes, and open questions collected in one quiet place.
+  Notes on Qwen2.5-VL: document parsing, grounding, video understanding, and practical evaluation.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
