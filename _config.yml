@@ -21,7 +21,7 @@
 title: Hunter's Notes
 email: hello@example.com
 description: >-
-  Notes on Qwen2.5-VL: document parsing, grounding, video understanding, and practical evaluation.
+  My notes on AI, engineering, and things worth writing down.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://bilibilimay.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
