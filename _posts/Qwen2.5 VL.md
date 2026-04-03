@@ -632,7 +632,7 @@ Qwen2.5-VL’s decoder is a **pretrained Qwen2.5 causal Transformer decoder** wi
 
 
 # How it inferences
-Apparently 3B model does not work completely to process the videos, but colab's T4 GPU only has 16GB of VRAM, does not support 7B model to run, so I cannot test it myself. But the inference pipeline is clear
+Apparently 3B model does not work completely to process the videos, but colab's T4 GPU only has 16GB of VRAM, does not support 7B model to run, so I cannot test it myself. But the inference pipeline is clear.
 https://colab.research.google.com/drive/1ldQPt8lSxiw3QtX-joFfXGU_iU3h_pS6#scrollTo=-PQ5jbSpwauE
 
 

@@ -9,6 +9,23 @@
       content="{{ page.excerpt | default: site.description | strip_html | strip_newlines | escape }}"
     >
     <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true,
+          processEnvironments: true
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      };
+    </script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
     {% feed_meta %}
   </head>
   <body class="page-{{ page.layout }}">
