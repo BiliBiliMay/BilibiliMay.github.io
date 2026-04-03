@@ -11,14 +11,10 @@
             "id": "2878cfaf49519a10",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Qwen2.5 VL.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Qwen2.5 VL"
+              "title": "New tab"
             }
           }
         ]
@@ -95,7 +91,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Qwen2.5 VL.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -105,7 +100,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Qwen2.5 VL"
+              "title": "Backlinks"
             }
           },
           {
@@ -114,12 +109,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Qwen2.5 VL.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Qwen2.5 VL"
+              "title": "Outgoing links"
             }
           },
           {
@@ -157,13 +151,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Qwen2.5 VL.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Qwen2.5 VL"
+              "title": "Outline"
             }
           }
         ]
@@ -186,8 +179,9 @@
   },
   "active": "2878cfaf49519a10",
   "lastOpenFiles": [
+    "Qwen2.5 VL.md",
+    "2026-04-03-analyzing-qwen2-5-vl.md",
     "Pasted image 20260403114628.png",
-    "Pasted image 20260403111855.png",
-    "Qwen2.5 VL.md"
+    "Pasted image 20260403111855.png"
   ]
 }

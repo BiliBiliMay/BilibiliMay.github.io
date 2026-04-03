@@ -1,11 +1,17 @@
 ---
 layout: post
-title: Analyzing Qwen2.5-VL
-date: 2026-04-02 09:00:00 +0800
-categories: Foundation models
+title: "Analyzing Qwen2.5-VL"
+date: 2026-04-03 09:00:00 +0800
+excerpt: "Qwen2.5-VL stands out for four practical changes: window attention in the vision encoder, dynamic FPS sampling for video, temporal MRoPE aligned to absolute time, and stronger multimodal data curation."
+summary: "Qwen2.5-VL stands out for four practical changes: window attention in the vision encoder, dynamic FPS sampling for video, temporal MRoPE aligned to absolute time, and stronger multimodal data curation."
+categories:
+  - analysis
+tags:
+  - qwen2.5-vl
+  - vision-language
+permalink: /posts/analyzing-qwen2-5-vl/
 ---
-# Intro
-Qwen2.5 VL follows the standard Encoder -> Merger -> Decoder architecture, with some advancement in the training methods. This blog is to note down the new contributions and also the inference pipeline.
+Qwen2.5-VL follows the standard Encoder -> Merger -> Decoder architecture, with a few meaningful changes in both architecture and training. This post is a technical note on the new contributions and the inference pipeline.
 
 There were mainly 4 contributions made:
 (1) implement **window attention** in the visual encoder to optimize inference efficiency; 
@@ -13,8 +19,10 @@ There were mainly 4 contributions made:
 dimension and enabling comprehensive video understanding across varied sampling rates;
 (3) upgrade **MRoPE in the temporal domain** by aligning to absolute time, thereby facilitating more sophisticated temporal sequence learning
 (4)  significant efforts in curating high-quality data for both pre-training and supervised fine-tuning
-![[Pasted image 20260403111855.png]]
-# The encoder
+
+![Overview of the four main Qwen2.5-VL contributions]({{ '/assets/images/qwen2-5-vl/encoder-overview.png' | relative_url }})
+
+## The encoder
 
 Converts raw images or video frames into tokens that are compact enough for the LLM to process, while still preserving fine spatial structure, scale, and temporal cues. Qwen2.5-VL tackles this with a redesigned ViT that combines **patchification**, **2D rotary positional encoding**, and **mostly local window attention with a few global-attention layers**. In the paper’s released configuration, the visual encoder has **32 layers**, uses **14×14 patches**, sets a **window size of 112×112 pixels**, and keeps only **4 full-attention blocks** at layers **7, 15, 23, and 31**.
 
@@ -27,7 +35,9 @@ Qwen2.5-VL begins like a Vision Transformer. Images are resized so height and wi
 Turning height and width into the multiples of 28 enables the model to accept the images and videos at (almost) their native resolution, given the example in the image the height = 8204 and width =1092, we have $8204/28 = 293$, $1092/28 = 39$, then $293 * 39 = 11427$ tokens. Instead of setting a fixed resolution for the encoder, this way supports the native resolution to be processed. 
 
 PS: Sometimes the resolution might not come in a multiple of 28, and resizing is needed, and that's why it is (almost) native resolution, but it still keeps the aspect ratio roughly the same.
-![[Pasted image 20260403114628.png]]
+
+![Example showing how native-resolution patching preserves a tall document layout]({{ '/assets/images/qwen2-5-vl/native-resolution-example.png' | relative_url }})
+
 ### What is RoPE?
 
 **Rotary Position Embedding (RoPE)** is a way to inject positional information directly into the query and key vectors used by attention. Instead of adding a learned position vector to each token embedding, RoPE rotates each 2D pair of hidden dimensions by a position-dependent angle. The original RoFormer paper’s key point is that RoPE uses an **absolute position parameterization**, but the resulting attention score becomes a function of **relative position difference**. That is the elegant part: positions are encoded locally in each token, yet the dot product naturally reflects offsets between tokens.
@@ -118,7 +128,7 @@ For fixed $M$, that scales linearly with $N$, not quadratically. This is the cor
 
 The trade-off is obvious. Global attention is expensive but sees everything immediately. Window attention is cheap but sees only local neighborhoods in one layer. So a model using pure window attention everywhere can become myopic unless it has some other mechanism for long-range mixing.
 
-Also i would personally think that window attention introduces the locality bias like CNN, window attention introduces a CNN-like **locality prior**, but not a full CNN-style inductive bias. CNNs hard-code both local receptive fields and shared filters, whereas window attention hard-codes locality but keeps the actual interactions content-dependent through self-attention.
+Also I would personally think that window attention introduces the locality bias like CNN, window attention introduces a CNN-like **locality prior**, but not a full CNN-style inductive bias. CNNs hard-code both local receptive fields and shared filters, whereas window attention hard-codes locality but keeps the actual interactions content-dependent through self-attention.
 
 ### How Qwen2.5-VL balances locality and global context
 
@@ -144,7 +154,7 @@ This is a quiet but important engineering detail. Native-resolution support is n
 
 A local attention window without good positional encoding can still confuse relative layout. It knows which tokens are in the same neighborhood, but not necessarily the exact 2D relationship between them. Conversely, a strong 2D positional encoding without an efficient attention pattern still leaves the model with a quadratic compute bottleneck. Qwen2.5-VL combines the two because native-resolution vision needs both: faithful geometry and scalable compute.
 
-### Contribution2: Dynamic FPS sampling
+### Contribution 2: Dynamic FPS sampling
 
 Qwen2.5-VL extends its dynamic-resolution idea from space into time by introducing **dynamic FPS sampling**. Instead of forcing every video to be processed at one fixed frame rate, the model can consume videos sampled at different FPS values, so different videos — or the same video under different settings — produce temporal token sequences of different lengths. ([arxiv.org](https://arxiv.org/pdf/2502.13923), [huggingface.co](https://huggingface.co/docs/transformers/en/model_doc/qwen2_5_vl))
 
@@ -200,10 +210,11 @@ A concise summary is:
 > Dynamic FPS sampling lets Qwen2.5-VL process videos at different frame rates, producing temporal token sequences of varying lengths and granularities. Higher FPS preserves more timing detail, lower FPS saves compute, and the model is explicitly informed how those temporal samples map to real time. ([arxiv.org](https://arxiv.org/pdf/2502.13923), [huggingface.co](https://huggingface.co/docs/transformers/en/model_doc/qwen2_5_vl))
 > 
 > In simple terms, when the video is long, we sample less FPS, when the video is short, we sample higher FPS.
+
 ### The encoder in one sentence
 
 The encoder of Qwen2.5-VL is best understood as a **native-resolution ViT** that replaces absolute position embeddings with **2D RoPE**, replaces most global attention with **window attention**, and then periodically restores **full-image communication** with a few global-attention layers. This is what allows the model to preserve fine spatial structure without paying the full quadratic cost at every layer.
-# The merger
+## The merger
 
 In a vision-language model, the vision encoder usually produces a long sequence of visual tokens, while the language model expects tokens that live in its own embedding space and can be processed together with text. The merger, sometimes also called a connector or projector, sits between these two components.
 
@@ -405,7 +416,7 @@ $$
 
 which reduces the number of visual tokens by $4\times$ while mapping them into the language model’s embedding space.
 
-# The decoder
+## The decoder
 
 In Qwen2.5-VL, the “decoder” is not a separate visual decoder that reconstructs pixels or upsamples features. It is the **Qwen2.5 language-model decoder**: a causal Transformer that takes a single mixed sequence of text tokens and visual tokens, then autoregressively predicts the next text token. The Qwen2.5-VL technical report explicitly describes the model as having three components — a vision encoder, an MLP-based vision-language merger, and a large language model — and says the model is initialized from pretrained **Qwen2.5 LLM** weights, with its original 1D RoPE modified into a multimodal RoPE aligned to absolute time.
 
@@ -631,12 +642,19 @@ After the stack of decoder layers, the hidden states pass through a final RMSNor
 Qwen2.5-VL’s decoder is a **pretrained Qwen2.5 causal Transformer decoder** with **GQA, RMSNorm, and SwiGLU**, upgraded with **multimodal RoPE** so it can process text tokens and merged visual tokens in one autoregressive sequence and generate the response token by token. 
 
 
-# How it inferences
-Apparently 3B model does not work completely to process the videos, but colab's T4 GPU only has 16GB of VRAM, does not support 7B model to run, so I cannot test it myself. But the inference pipeline is clear
-https://colab.research.google.com/drive/1ldQPt8lSxiw3QtX-joFfXGU_iU3h_pS6#scrollTo=-PQ5jbSpwauE
+## How inference works
 
+At inference time, Qwen2.5-VL follows a fairly clean path from pixels to text. The processor first prepares the visual input by resizing it into the native-resolution tokenization scheme, sampling video frames at the chosen FPS when needed, and generating the multimodal position metadata. The vision encoder turns those inputs into visual features, the merger compresses and projects them into the language-model space, and the decoder then autoregressively generates text from one mixed sequence of text tokens and visual tokens.
 
-  
+In practical terms, the loop looks like this:
+
+1. preprocess images or videos into visual tensors and temporal metadata
+2. encode them with the ViT-based vision encoder
+3. compress and project them with the merger
+4. concatenate the merged visual tokens with the text prompt
+5. decode the response token by token with the Qwen2.5 language model
+
+That pipeline is conceptually simple, but the quality of the output depends heavily on the earlier architectural choices discussed above. Better spatial fidelity, better temporal alignment, and better token compression all directly affect what the decoder is able to reason over.
 
 ## Sources
 
@@ -646,4 +664,4 @@ https://colab.research.google.com/drive/1ldQPt8lSxiw3QtX-joFfXGU_iU3h_pS6#scroll
 - [Rotary Position Embedding for Vision Transformer](https://arxiv.org/abs/2403.13298?utm_source=chatgpt.com)
 - [A Survey of Connectors in Multi-modal Large Language Models](https://arxiv.org/abs/2502.11453?utm_source=chatgpt.com)
 - [LLaVA-1.5 / Improved Baselines with Visual Instruction Tuning](https://arxiv.org/abs/2310.03744?utm_source=chatgpt.com)
-- [Hugging Face Transformers documentation for Qwen2.5-VL](https://huggingface.co/docs/transformers/main/en/model_doc/qwen2_5_vl
+- <a href="https://huggingface.co/docs/transformers/main/en/model_doc/qwen2_5_vl">Hugging Face Transformers documentation for Qwen2.5-VL</a>

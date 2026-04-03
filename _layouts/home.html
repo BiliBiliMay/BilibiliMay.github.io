@@ -20,7 +20,7 @@ layout: default
           <article>
             <p class="post-date">{{ post.date | date: "%B %-d, %Y" }}</p>
             <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-            <p class="post-summary">{{ post.excerpt | strip_html | strip_newlines | truncate: 260 }}</p>
+            <p class="post-summary">{{ post.summary | default: post.excerpt | strip_html | strip_newlines | truncate: 260 }}</p>
           </article>
         </li>
       {% endfor %}
