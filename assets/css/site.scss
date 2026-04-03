@@ -1,0 +1,342 @@
+---
+---
+:root {
+  --page-bg: #f6f1e7;
+  --panel-bg: rgba(255, 252, 245, 0.82);
+  --border: rgba(28, 36, 48, 0.14);
+  --text: #1a1f26;
+  --muted: #666556;
+  --accent: #0f4f79;
+  --accent-soft: rgba(15, 79, 121, 0.12);
+  --shadow: 0 24px 60px rgba(25, 31, 38, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(15, 79, 121, 0.12), transparent 30rem),
+    linear-gradient(180deg, #fbf8f1 0%, var(--page-bg) 100%);
+  color: var(--text);
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Baskerville, Georgia, serif;
+  line-height: 1.75;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: rgba(15, 79, 121, 0.35);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+img {
+  max-width: 100%;
+}
+
+.site-shell {
+  width: min(100% - 2rem, 54rem);
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+.site-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.75rem 0 1.75rem;
+  border-bottom: 1px solid var(--border);
+  animation: rise-in 0.55s ease both;
+}
+
+.site-brand,
+.site-nav {
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+
+.site-brand {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1.1rem;
+  font-size: 0.92rem;
+}
+
+.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.site-nav a[aria-current="page"],
+.site-nav a:hover {
+  color: var(--text);
+}
+
+.site-main {
+  padding-top: 2.5rem;
+}
+
+.intro-block,
+.page-sheet,
+.post-sheet {
+  animation: rise-in 0.65s ease both;
+}
+
+.intro-block {
+  margin-bottom: 3rem;
+}
+
+.kicker {
+  margin: 0 0 0.7rem;
+  color: var(--accent);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.intro-block h1,
+.page-header h1,
+.post-header h1 {
+  margin: 0;
+  font-size: clamp(2.7rem, 7vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+
+.intro-copy {
+  max-width: 38rem;
+  margin: 1.3rem 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.section-head p,
+.post-date,
+.empty-state {
+  margin: 0;
+  color: var(--muted);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+}
+
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-card {
+  padding: 1.4rem 0 1.55rem;
+  border-bottom: 1px solid var(--border);
+  animation: rise-in 0.6s ease both;
+}
+
+.post-card:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.post-card:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.post-card:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+.post-card h3 {
+  margin: 0.25rem 0 0.45rem;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 400;
+  line-height: 1.18;
+}
+
+.post-card h3 a {
+  text-decoration: none;
+}
+
+.post-summary {
+  max-width: 42rem;
+  margin: 0;
+  color: var(--muted);
+}
+
+.page-sheet,
+.post-sheet {
+  padding: 2rem 0 0;
+}
+
+.page-header,
+.post-header {
+  margin-bottom: 2rem;
+}
+
+.page-content,
+.post-content {
+  font-size: 1.05rem;
+}
+
+.page-content p,
+.post-content p,
+.page-content ul,
+.post-content ul,
+.page-content ol,
+.post-content ol,
+.post-content pre,
+.post-content figure {
+  margin: 0 0 1.25rem;
+}
+
+.page-content h2,
+.post-content h2,
+.page-content h3,
+.post-content h3 {
+  margin: 2.2rem 0 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.page-content blockquote,
+.post-content blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1.2rem;
+  border-left: 3px solid var(--accent-soft);
+  color: var(--muted);
+}
+
+.page-content code,
+.post-content code {
+  padding: 0.08rem 0.34rem;
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.68);
+  font-family: "SFMono-Regular", "SF Mono", Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.page-content pre,
+.post-content pre {
+  overflow-x: auto;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow);
+}
+
+.page-content pre code,
+.post-content pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.faq-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.faq-item {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--panel-bg);
+  box-shadow: var(--shadow);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.98rem;
+  font-weight: 600;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item p {
+  margin: 0.8rem 0 0;
+  color: var(--muted);
+}
+
+.post-footer {
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .site-shell {
+    width: min(100% - 1.5rem, 54rem);
+    padding-top: 1.2rem;
+  }
+
+  .site-header,
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+    gap: 0.85rem;
+  }
+
+  .site-main {
+    padding-top: 2rem;
+  }
+}

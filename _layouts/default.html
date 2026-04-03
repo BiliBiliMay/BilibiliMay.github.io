@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title and page.url != "/" %}{{ page.title | escape }} · {% endif %}{{ site.title | escape }}</title>
+    <meta
+      name="description"
+      content="{{ page.excerpt | default: site.description | strip_html | strip_newlines | escape }}"
+    >
+    <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+    {% feed_meta %}
+  </head>
+  <body class="page-{{ page.layout }}">
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="site-brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="{{ '/' | relative_url }}" {% if page.url == "/" %}aria-current="page"{% endif %}>Posts</a>
+          <a href="{{ '/faq/' | relative_url }}" {% if page.url == "/faq/" %}aria-current="page"{% endif %}>FAQ</a>
+          <a href="{{ site.github_url }}" rel="noreferrer" target="_blank">GitHub</a>
+        </nav>
+      </header>
+
+      <main class="site-main">
+        {{ content }}
+      </main>
+    </div>
+  </body>
+</html>
